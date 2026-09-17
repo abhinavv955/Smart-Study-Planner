@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <h2 class="logo">Smart Study Planner</h2>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/planner">Study Planner</a></li>
+        <li><a href="/study-log">Study Record</a></li>
+        <li><a href="/summary">Summary</a></li>
+        <li><a href="/weekly-test">Weekly Test</a></li>
+    </ul>
+</nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+    <h1>Weekly Subject-wise Test</h1>
+
+    <!-- SUBJECT SELECTION -->
+    <div class="output">
+        <form method="post">
+            <label><strong>Select Subject</strong></label><br><br>
+            <select name="subject" required>
+                <option value="">-- Choose Subject --</option>
+                {% for sub in subjects %}
+                    <option value="{{ sub }}"
+                        {% if sub == selected_subject %}selected{% endif %}>
+                        {{ sub }}
+                    </option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <button class="btn" type="submit">Load Test</button>
+        </form>
+    </div>
+
+    <!-- MCQ QUESTIONS -->
+    {% if questions %}
+    <form method="post">
+        
+        <input type="hidden" name="subject" value="{{ selected_subject }}">
+
+        {% for q in questions %}
+            {% set idx = loop.index0 %}
+            <div class="output">
+                <p><strong>{{ loop.index }}. {{ q.question }}</strong></p>
+
+                {% for opt in q.options %}
+                    <label>
+                        <input type="radio"
+                               name="q{{ idx }}"
+                               value="{{ opt }}"
+                               required>
+                        {{ opt }}
+                    </label><br>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button class="btn" type="submit">Submit Exam</button>
+    </form>
+    {% endif %}
+
+    <!-- RESULT -->
+    {% if score is not none %}
+    <div class="output">
+        <h2>Exam Result</h2>
+        <p><strong>Subject:</strong> {{ selected_subject }}</p>
+        <p><strong>Score:</strong> {{ score }} / {{ total }}</p>
+
+        {% if score >= total * 0.6 %}
+            <p style="color: lightgreen;">✅ Passed</p>
+        {% else %}
+            <p style="color: red;">❌ Failed</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>Smart Study Planner | Weekly Test Module</p>
+</footer>
+
+</body>
+</html>

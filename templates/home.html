@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Study Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h2 class="logo">Smart Study Planner</h2>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/planner">Study Planner</a></li>
+            <li><a href="/study-log">Study Record</a></li>
+            <li><a href="/summary">Summary</a></li>
+            <li><a href="/weekly-test">Weekly Test</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <div class="container">
+        <h1 class="logo-title">
+    Study<span>Flow</span>
+     </h1>
+
+      <p class="tagline">
+         Plan • Track • Analyze • Succeed
+      </p>
+
+        <p class="subtitle">
+            A smart academic platform to plan study schedules, track daily learning,
+            and evaluate performance through subject-wise tests and visual analytics.
+        </p>
+
+        <!-- BUTTON LINKS -->
+        <div class="buttons">
+            <a href="/planner" class="btn">Create Study Plan</a>
+            <a href="/study-log" class="btn">Add Study Record</a>
+            <a href="/summary" class="btn">View Summary</a>
+            <a href="/weekly-test" class="btn">Weekly Test</a>
+        </div>
+
+        <!-- SCROLL INDICATOR -->
+        <a href="#about" class="scroll-down">↓</a>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="info-section">
+        <h2>What is Smart Study Planner & Task Scheduler?</h2>
+        <p>
+            Smart Study Planner & Task Scheduler is a smart academic platform designed to help students
+            plan their study schedules, track daily learning activities,
+            and evaluate performance through subject-wise weekly tests
+            and visual analytics.
+        </p>
+    </section>
+
+   <!-- KEY FEATURES -->
+<section class="features-section">
+
+<h2 class="features-title">Key Features</h2>
+
+<div class="feature-row reveal">
+
+    <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Smart Study Planner</h3>
+        <p>
+        Automatically generate optimized study schedules based on subject
+        difficulty, available study hours, and upcoming exam timelines.
+        This helps students plan their preparation efficiently.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="feature-row reverse reveal">
+
+    <div class="feature-card">
+        <div class="feature-icon">📘</div>
+        <h3>Study Log</h3>
+        <p>
+        Record daily study sessions and keep track of completed
+        learning activities. The system monitors consistency and
+        provides insights into study habits.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="feature-row reveal">
+
+    <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Weekly Tests</h3>
+        <p>
+        Evaluate subject understanding through automated
+        MCQ-based assessments. Weekly quizzes help reinforce
+        concepts and measure learning progress.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="feature-row reverse reveal">
+
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Analytics Dashboard</h3>
+        <p>
+        Visualize study performance using interactive charts,
+        progress indicators, and summarized reports that help
+        identify strengths and weak areas.
+        </p>
+    </div>
+
+</div>
+
+</section>
+    <!-- Footer -->
+    <footer>
+        <p>Capstone Project | 2nd Year | Smart Study Planner</p>
+    </footer>
+<script>
+
+function revealOnScroll(){
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    reveals.forEach((el)=>{
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+
+        if(elementTop < windowHeight - 100){
+            el.classList.add("active");
+        }
+    });
+
+}
+
+window.addEventListener("scroll", revealOnScroll);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <h2 class="logo">Smart Study Planner</h2>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/planner">Study Planner</a></li>
+        <li><a href="/study-log">Study Record</a></li>
+        <li><a href="/summary">Summary</a></li>
+        <li><a href="/weekly-test">Weekly Test</a></li>
+    </ul>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+    <h1>Study Summary Dashboard</h1>
+
+    <!-- STUDY SUMMARY TABLE -->
+<div class="output">
+    <h2>Weekly Study Summary</h2>
+
+    {% if subject_hours %}
+    <table width="100%" cellpadding="10">
+
+        <tr>
+            <th>Subject</th>
+            <th>Planned Hours</th>
+            <th>Studied Hours</th>
+            <th>Schedule Status</th>
+            <th>Performance</th>
+        </tr>
+
+        {% for subject, hours in subject_hours.items() %}
+        <tr>
+
+            <td>{{ subject }}</td>
+
+            <td>{{ planned_hours.get(subject, 0) }}</td>
+
+            <td>{{ hours }}</td>
+
+            <!-- Planned vs Studied -->
+            <td>
+                {% if hours >= planned_hours.get(subject,0) %}
+                    <span style="color:#22c55e;font-weight:bold;">On Track</span>
+                {% else %}
+                    <span style="color:#ef4444;font-weight:bold;">Behind Schedule</span>
+                {% endif %}
+            </td>
+
+            <!-- Performance based on Planned vs Studied -->
+            <td>
+
+                {% set planned = planned_hours.get(subject,0) %}
+
+                {% if planned == 0 %}
+                    <span style="color:gray;font-weight:bold;">No Plan</span>
+
+                {% elif hours >= planned %}
+                    <span style="color:#22c55e;font-weight:bold;">Good</span>
+
+                {% elif hours >= (planned * 0.5) %}
+                    <span style="color:#f59e0b;font-weight:bold;">Average</span>
+
+                {% else %}
+                    <span style="color:#ef4444;font-weight:bold;">Needs Improvement</span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+        <p>No study records available.</p>
+    {% endif %}
+</div>
+
+<!-- SUBJECT PROGRESS BARS -->
+   <div class="output">
+    <h2>Subject Study Progress</h2>
+
+    {% if progress_data %}
+        {% for subject, percent in progress_data.items() %}
+
+            <div class="progress-item">
+                <p><strong>{{ subject }}</strong> ({{ subject_hours[subject] }} hrs)</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="--progress: {{ percent }}%;">
+                        {{ percent }}%
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <p>No study data available.</p>
+    {% endif %}
+   </div>
+
+
+    <!-- STUDY INSIGHTS -->
+    <div class="output">
+        <h2>Study Insights</h2>
+        <ul>
+            <li><strong>Total Study Hours:</strong> {{ total_hours }}</li>
+            <li><strong>Most Studied Subject:</strong> {{ most_studied }}</li>
+            <li><strong>Least Studied Subject:</strong> {{ least_studied }}</li>
+            <li><strong>Completed Sessions:</strong> {{ completed }}</li>
+            <li><strong>Not Completed Sessions:</strong> {{ not_completed }}</li>
+        </ul>
+    </div>
+
+    <!-- EXAM SUMMARY -->
+   <div class="output">
+    <h2>Weekly Exam Performance</h2>
+
+    {% if total_exams > 0 and last_score %}
+        <p><strong>Total Exams Attempted:</strong> {{ total_exams }}</p>
+
+        <p>
+            <strong>Last Exam Score:</strong>
+            {{ last_score['score'] }} / {{ last_score['total'] }}
+        </p>
+
+        <p>
+            <strong>Last Exam Result:</strong>
+
+            {% if last_score['status'] == "Pass" %}
+                <span style="color:#22c55e;font-weight:bold;">Pass</span>
+            {% else %}
+                <span style="color:#ef4444;font-weight:bold;">Fail</span>
+            {% endif %}
+
+        </p>
+
+      <p>
+<strong>Average Exam Score:</strong>
+
+{% if avg_score is not none %}
+    <span style="
+        background:#3b82f6;
+        color:white;
+        padding:4px 10px;
+        border-radius:6px;
+        font-weight:bold;
+        margin-left:6px;
+    ">
+        {{ avg_score | round(2) }}
+    </span>
+{% else %}
+    <span style="
+        background:#94a3b8;
+        color:white;
+        padding:4px 10px;
+        border-radius:6px;
+        font-weight:bold;
+        margin-left:6px;
+    ">
+        Not Available
+    </span>
+{% endif %}
+
+</p>
+        <p>
+            <strong>Pass Count:</strong>
+            <span style="color:#22c55e;font-weight:bold;">{{ pass_count }}</span>
+        </p>
+
+        <p>
+            <strong>Fail Count:</strong>
+            <span style="color:#ef4444;font-weight:bold;">{{ fail_count }}</span>
+        </p>
+
+    {% else %}
+        <p>No exams attempted yet.</p>
+    {% endif %}
+</div>
+    <!-- CHART DATA  -->
+    <div id="chartData"
+         data-subject-labels='{{ subject_hours.keys() | list | tojson }}'
+         data-subject-values='{{ subject_hours.values() | list | tojson }}'
+         data-pass='{{ pass_count }}'
+         data-fail='{{ fail_count }}'>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="output">
+        <h2>Study Hours by Subject</h2>
+        <canvas id="studyChart"></canvas>
+    </div>
+
+    <!-- PIE CHART -->
+<div class="output">
+    <h2>Exam Result Distribution</h2>
+
+    <div class="chart-box">
+        <canvas id="examChart"></canvas>
+    </div>
+</div>
+
+
+
+<!--  JS -->
+<script>
+    const chartData = document.getElementById("chartData");
+
+    const labels = JSON.parse(chartData.dataset.subjectLabels || "[]");
+    const values = JSON.parse(chartData.dataset.subjectValues || "[]");
+
+    const passCount = parseInt(chartData.dataset.pass || 0);
+    const failCount = parseInt(chartData.dataset.fail || 0);
+
+    // BAR CHART
+    if (labels.length > 0) {
+        new Chart(document.getElementById('studyChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Study Hours',
+                    data: values,
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // PIE CHART
+    if (passCount + failCount > 0) {
+    new Chart(document.getElementById('examChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Pass', 'Fail'],
+            datasets: [{
+                data: [passCount, failCount],
+                backgroundColor: ['#2ecc71', '#e74c3c']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,   
+            plugins: {
+                legend: {
+                    position: 'bottom' 
+                }
+            }
+        }
+    });
+}
+
+</script>
+
+<!-- Footer -->
+    <footer>
+        <p>Smart Study Planner | Study Log Module</p>
+    </footer>
+
+
+
+</body>
+</html>

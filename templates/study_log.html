@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h2 class="logo">Smart Study Planner</h2>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/planner">Study Planner</a></li>
+            <li><a href="/study-log">Study Record</a></li>
+            <li><a href="/summary">Summary</a></li>
+            <li><a href="/weekly-test">Weekly Test</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Daily Study Record</h1>
+
+        <!-- Study Log Form -->
+        <form class="planner-form" method="post" action="/study-log">
+
+            <label>Date</label>
+            <input type="date" name="date" required>
+
+            <label>Subject</label>
+            <input type="text" name="subject" placeholder="Enter subject name" required>
+
+            <label>Time Studied (in hours)</label>
+            <input type="number" name="hours" placeholder="Enter hours" required>
+
+            <label>Task Status</label>
+            <select name="status" required>
+                <option value="">Select</option>
+                <option value="Completed">Completed</option>
+                <option value="Not Completed">Not Completed</option>
+            </select>
+
+            <button type="submit" class="btn">Save Record</button>
+        </form>
+
+        <!-- Message -->
+        <div class="output">
+            {% if message %}
+                <p><strong>{{ message }}</strong></p>
+            {% else %}
+                <p>Fill the form and click "Save Record".</p>
+            {% endif %}
+        </div>
+
+        <!-- Display Saved Logs -->
+        <div class="output">
+            <h2>Saved Study Records</h2>
+
+            {% if logs and logs|length > 0 %}
+                {% for log in logs %}
+                    <p>
+                        <strong>{{ log.date }}</strong> |
+                        {{ log.subject }} |
+                        {{ log.hours }} hrs |
+                        {{ log.status }}
+                    </p>
+                {% endfor %}
+            {% else %}
+                <p>No study records saved yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Smart Study Planner | Study Log Module</p>
+    </footer>
+
+
+</body>
+</html>
